@@ -3,12 +3,11 @@ compiler:
   - gcc
   - clang
 before_script:
-  - mkdir ../build2
-  - cd ../build2
+  - mkdir ../build
+  - cd ../build
 script:
-  - cmake ../Lab2
+  - cmake ../381908-1_Remizova_Lab3-4
   - make -j
-  - ls
   - ./test/MP2_TESTS
 notifications:
   email: false
