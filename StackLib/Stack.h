@@ -19,9 +19,13 @@ public:
     virtual ~TStack();
 
     TStack<T>& operator =(const TStack<T>& S);
+    bool operator ==(const TStack<T>& S) const;
+    bool operator !=(const TStack<T>& S) const;
 
     void Push(T dannye); //положить
     T Get(); //взять из вершины и удалить, либо посмотреть  и удалить вершину
+    bool IsEmpty();
+    bool IsFull();
 
     template <class T1>
     friend ostream& operator<< (ostream& ostr, const TStack<T1>& S);
@@ -84,9 +88,31 @@ inline TStack<T>& TStack<T>::operator =(const TStack<T>& S)
 }
 
 template<class T>
+inline bool TStack<T>::operator==(const TStack<T>& S) const
+{
+    if (length != S.length || ind != S.ind)
+        return false;
+    for (int i = 0; i < ind; i++)
+        if (x[i] != S.x[i])
+            return false;
+    return true;
+}
+
+template<class T>
+inline bool TStack<T>::operator!=(const TStack<T>& S) const
+{
+    if (length != S.length || ind != S.ind)
+        return true;
+    for (int i = 0; i < ind; i++)
+        if (x[i] != S.x[i])
+            return true;
+    return false;
+}
+
+template<class T>
 inline void TStack<T>::Push(T dannye)
 {
-    if (ind >= length)
+    if (this->IsFull())
         throw exception();
     x[ind] = dannye;
     ind++;
@@ -95,35 +121,53 @@ inline void TStack<T>::Push(T dannye)
 template<class T>
 inline T TStack<T>::Get()
 {
-    if (ind == 0)
+    if (this->IsEmpty())
         throw exception();
     T d = x[ind - 1];
     ind--;
     return d;
 }
 
+template<class T>
+inline bool TStack<T>::IsEmpty()
+{
+    if (ind == 0)
+        return true;
+    else return false;
+}
 
+template<class T>
+inline bool TStack<T>::IsFull()
+{
+    if (ind >= length)
+        return true;
+    else return false;
+}
 
 template <class T1>
-ostream& operator<< (ostream& ostr, const TStack<T1>& A) 
+ostream& operator<< (ostream& ostr, const TStack<T1>& S) 
 {
-    for (int i = 0; i < A.ind; i++)
+    for (int i = 0; i < S.ind; i++)
     {
-        ostr << A.x[i] << endl;
+        ostr << S.x[i] << " ";
     }
     return ostr;
 }
 
 template <class T1>
-istream& operator >> (istream& istr, TStack<T1>& A) 
+istream& operator >> (istream& istr, TStack<T1>& S) 
 {
+    if (S.IsFull())
+        throw "Stack is full";
     int count;
     istr >> count; //количество элементов, которое хотим положить
+    if (S.ind + count > S.length)
+        throw exception();
     for (int i = 0; i < count; i++)
     {
         T1 d;
         istr >> d;
-        A.Push(d);
+        S.Push(d);
     }
     return istr;
 }
